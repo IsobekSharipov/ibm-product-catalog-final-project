@@ -1,6 +1,6 @@
 """Selenium step definitions for browser button interactions."""
 
-from behave import when
+from behave import then, when
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -26,3 +26,15 @@ def _xpath_literal(value):
         return f"'{value}'"
     parts = value.split('"')
     return "concat(" + ", '\"\', ".join(f'"{part}"' for part in parts) + ")"
+
+
+@then('I should see the text "{expected_text}"')
+def step_verify_text_present(context, expected_text):
+    """Wait until the specified text is visible on the page."""
+    driver = context.browser
+    WebDriverWait(driver, 10).until(
+        EC.text_to_be_present_in_element((By.TAG_NAME, "body"), expected_text)
+    )
+    assert expected_text in driver.find_element(By.TAG_NAME, "body").text, (
+        f"Expected text not found: {expected_text}"
+    )
