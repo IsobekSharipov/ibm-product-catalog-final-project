@@ -58,3 +58,26 @@ def test_read_a_product(client, db_session):
     assert data["description"] == product.description
     assert data["price"] == product.price
     assert data["available"] == product.available
+
+def test_update_a_product(client, db_session):
+    """It should update an existing product through the REST API."""
+    product = ProductFactory()
+    db_session.add(product)
+    db_session.commit()
+
+    response = client.patch(
+        f"/products/{product.id}",
+        json={"name": "Updated Product", "price": 149.99, "available": False},
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == product.id
+    assert data["name"] == "Updated Product"
+    assert data["price"] == 149.99
+    assert data["available"] is False
+
+    db_session.refresh(product)
+    assert product.name == "Updated Product"
+    assert product.price == 149.99
+    assert product.available is False
