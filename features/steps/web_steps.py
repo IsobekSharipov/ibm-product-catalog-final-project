@@ -38,3 +38,16 @@ def step_verify_text_present(context, expected_text):
     assert expected_text in driver.find_element(By.TAG_NAME, "body").text, (
         f"Expected text not found: {expected_text}"
     )
+
+
+@then('I should not see the text "{unexpected_text}"')
+def step_verify_text_absent(context, unexpected_text):
+    """Wait until the specified text is absent from visible page content."""
+    driver = context.browser
+    WebDriverWait(driver, 10).until_not(
+        EC.text_to_be_present_in_element((By.TAG_NAME, "body"), unexpected_text)
+    )
+    visible_text = driver.find_element(By.TAG_NAME, "body").text
+    assert unexpected_text not in visible_text, (
+        f"Unexpected text is still visible: {unexpected_text}"
+    )
