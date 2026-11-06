@@ -110,3 +110,18 @@ def test_list_all_products(client, db_session):
     assert isinstance(data, list)
     assert len(data) == 3
     assert {item["id"] for item in data} == {product.id for product in products}
+
+def test_list_products_by_name(client, db_session):
+    """It should filter products by name through the REST API."""
+    matching_product = ProductFactory(name="Wireless Mouse")
+    other_product = ProductFactory(name="Mechanical Keyboard")
+    db_session.add_all([matching_product, other_product])
+    db_session.commit()
+
+    response = client.get("/products", params={"name": "Wireless Mouse"})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["id"] == matching_product.id
+    assert data[0]["name"] == "Wireless Mouse"
