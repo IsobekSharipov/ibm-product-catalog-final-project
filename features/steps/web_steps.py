@@ -51,3 +51,16 @@ def step_verify_text_absent(context, unexpected_text):
     assert unexpected_text not in visible_text, (
         f"Unexpected text is still visible: {unexpected_text}"
     )
+
+
+@then('I should see the message "{expected_message}"')
+def step_verify_message_present(context, expected_message):
+    """Wait for an expected message to appear in visible page text."""
+    driver = context.browser
+    WebDriverWait(driver, 10).until(
+        EC.text_to_be_present_in_element((By.TAG_NAME, "body"), expected_message)
+    )
+    page_text = driver.find_element(By.TAG_NAME, "body").text
+    assert expected_message in page_text, (
+        f"Expected message was not displayed: {expected_message}"
+    )
