@@ -100,3 +100,17 @@ def test_find_products_by_name(db_session):
     assert len(results) == 1
     assert results[0].id == matching_product.id
     assert results[0].name == "Wireless Mouse"
+
+def test_find_products_by_category(db_session):
+    """It should find only products in the requested category."""
+    first = ProductFactory(category="Electronics")
+    second = ProductFactory(category="Electronics")
+    other = ProductFactory(category="Home")
+    db_session.add_all([first, second, other])
+    db_session.commit()
+
+    results = db_session.query(Product).filter_by(category="Electronics").all()
+
+    assert len(results) == 2
+    assert {product.id for product in results} == {first.id, second.id}
+    assert all(product.category == "Electronics" for product in results)
