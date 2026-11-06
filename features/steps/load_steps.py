@@ -31,4 +31,4 @@ def step_load_products(context):
 
         session.commit()
 
-    context.loaded_products = len(context.table)
+    context.loaded_products = len(context.table.rows)
