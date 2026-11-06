@@ -52,3 +52,25 @@ def step_delete_product(context, product_id):
     """Delete a product by ID using the API."""
     with TestClient(app) as client:
         context.response = client.delete(f"/products/{product_id}")
+
+
+@when("I request the list of all products")
+def step_list_all_products(context):
+    """Request the complete product catalog."""
+    with TestClient(app) as client:
+        context.response = client.get("/products")
+
+
+@then("the response should contain {count:d} products")
+def step_check_product_count(context, count):
+    """Verify the number of returned products."""
+    products = context.response.json()
+    assert isinstance(products, list), products
+    assert len(products) == count, products
+
+
+@then('the product list should contain "{name}"')
+def step_check_product_in_list(context, name):
+    """Verify that a named product appears in the catalog."""
+    products = context.response.json()
+    assert any(product["name"] == name for product in products), products
