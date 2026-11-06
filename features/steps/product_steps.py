@@ -105,3 +105,18 @@ def step_check_all_availability(context, available):
     products = context.response.json()
     assert products, "Expected at least one product"
     assert all(product["available"] is expected for product in products), products
+
+
+@when('I search for products with name "{name}"')
+def step_search_by_name(context, name):
+    """Filter products by name through the REST API."""
+    with TestClient(app) as client:
+        context.response = client.get("/products", params={"name": name})
+
+
+@then('all returned products should have name "{name}"')
+def step_check_all_names(context, name):
+    """Verify all returned products match the requested name."""
+    products = context.response.json()
+    assert products, "Expected at least one product"
+    assert all(product["name"] == name for product in products), products
