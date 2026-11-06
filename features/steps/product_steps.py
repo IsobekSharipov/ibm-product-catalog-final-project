@@ -45,3 +45,10 @@ def step_update_product(context, product_id, name, price):
             f"/products/{product_id}",
             json={"name": name, "price": price},
         )
+
+
+@when("I delete the product with ID {product_id:d}")
+def step_delete_product(context, product_id):
+    """Delete a product by ID using the API."""
+    with TestClient(app) as client:
+        context.response = client.delete(f"/products/{product_id}")
