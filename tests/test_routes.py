@@ -96,3 +96,17 @@ def test_delete_a_product(client, db_session):
 
     read_response = client.get(f"/products/{product_id}")
     assert read_response.status_code == 404
+
+def test_list_all_products(client, db_session):
+    """It should return all products through the REST API."""
+    products = [ProductFactory() for _ in range(3)]
+    db_session.add_all(products)
+    db_session.commit()
+
+    response = client.get("/products")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert len(data) == 3
+    assert {item["id"] for item in data} == {product.id for product in products}
