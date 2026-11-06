@@ -81,3 +81,18 @@ def test_update_a_product(client, db_session):
     assert product.name == "Updated Product"
     assert product.price == 149.99
     assert product.available is False
+
+def test_delete_a_product(client, db_session):
+    """It should delete a product through the REST API."""
+    product = ProductFactory()
+    db_session.add(product)
+    db_session.commit()
+    product_id = product.id
+
+    response = client.delete(f"/products/{product_id}")
+
+    assert response.status_code == 204
+    assert db_session.get(Product, product_id) is None
+
+    read_response = client.get(f"/products/{product_id}")
+    assert read_response.status_code == 404
