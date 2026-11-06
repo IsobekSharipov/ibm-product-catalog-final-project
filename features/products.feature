@@ -54,3 +54,10 @@ Feature: Product Catalog Management
     And the product list should contain "Wireless Mouse"
     And the product list should contain "Keyboard"
     And all returned products should have availability "true"
+
+  Scenario: Search products by name
+    When I search for products with name "Wireless Mouse"
+    Then the response status code should be 200
+    And the response should contain 1 products
+    And the product list should contain "Wireless Mouse"
+    And all returned products should have name "Wireless Mouse"
