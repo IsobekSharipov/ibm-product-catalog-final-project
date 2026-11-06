@@ -74,3 +74,18 @@ def step_check_product_in_list(context, name):
     """Verify that a named product appears in the catalog."""
     products = context.response.json()
     assert any(product["name"] == name for product in products), products
+
+
+@when('I search for products in category "{category}"')
+def step_search_by_category(context, category):
+    """Filter products by category using the REST API."""
+    with TestClient(app) as client:
+        context.response = client.get("/products", params={"category": category})
+
+
+@then('all returned products should belong to category "{category}"')
+def step_check_all_categories(context, category):
+    """Verify all search results belong to the requested category."""
+    products = context.response.json()
+    assert products, "Expected at least one product"
+    assert all(product["category"] == category for product in products), products
