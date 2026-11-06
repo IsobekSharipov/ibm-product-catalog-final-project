@@ -87,3 +87,16 @@ def test_list_all_products(db_session):
     assert {product.id for product in saved_products} == {
         product.id for product in products
     }
+
+def test_find_products_by_name(db_session):
+    """It should find products matching a given name."""
+    matching_product = ProductFactory(name="Wireless Mouse")
+    other_product = ProductFactory(name="Mechanical Keyboard")
+    db_session.add_all([matching_product, other_product])
+    db_session.commit()
+
+    results = db_session.query(Product).filter_by(name="Wireless Mouse").all()
+
+    assert len(results) == 1
+    assert results[0].id == matching_product.id
+    assert results[0].name == "Wireless Mouse"
