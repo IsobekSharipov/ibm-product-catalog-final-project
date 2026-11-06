@@ -60,3 +60,17 @@ def test_update_a_product(db_session):
     assert updated_product.name == "Updated Laptop"
     assert updated_product.price == 1299.99
     assert updated_product.available is False
+
+def test_delete_a_product(db_session):
+    """It should delete a product from the database."""
+    product = ProductFactory()
+    db_session.add(product)
+    db_session.commit()
+    product_id = product.id
+
+    db_session.delete(product)
+    db_session.commit()
+
+    deleted_product = db_session.get(Product, product_id)
+
+    assert deleted_product is None
