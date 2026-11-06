@@ -74,3 +74,16 @@ def test_delete_a_product(db_session):
     deleted_product = db_session.get(Product, product_id)
 
     assert deleted_product is None
+
+def test_list_all_products(db_session):
+    """It should list all products stored in the database."""
+    products = [ProductFactory() for _ in range(5)]
+    db_session.add_all(products)
+    db_session.commit()
+
+    saved_products = db_session.query(Product).all()
+
+    assert len(saved_products) == 5
+    assert {product.id for product in saved_products} == {
+        product.id for product in products
+    }
