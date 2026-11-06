@@ -89,3 +89,19 @@ def step_check_all_categories(context, category):
     products = context.response.json()
     assert products, "Expected at least one product"
     assert all(product["category"] == category for product in products), products
+
+
+@when('I search for products with availability "{available}"')
+def step_search_by_availability(context, available):
+    """Filter products by availability using the REST API."""
+    with TestClient(app) as client:
+        context.response = client.get("/products", params={"available": available})
+
+
+@then('all returned products should have availability "{available}"')
+def step_check_all_availability(context, available):
+    """Verify every returned product matches the requested availability."""
+    expected = available.lower() == "true"
+    products = context.response.json()
+    assert products, "Expected at least one product"
+    assert all(product["available"] is expected for product in products), products
