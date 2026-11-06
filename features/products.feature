@@ -31,3 +31,10 @@ Feature: Product Catalog Management
     Then the response status code should be 204
     When I request the product with ID 2
     Then the response status code should be 404
+
+  Scenario: List all products
+    When I request the list of all products
+    Then the response status code should be 200
+    And the response should contain 2 products
+    And the product list should contain "Wireless Mouse"
+    And the product list should contain "Keyboard"
