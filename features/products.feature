@@ -15,3 +15,13 @@ Feature: Product Catalog Management
     And the product name should be "Wireless Mouse"
     And the product category should be "Electronics"
     And the product price should be 25.99
+
+  Scenario: Update an existing product
+    When I update the product with ID 1 with name "Gaming Mouse" and price 39.99
+    Then the response status code should be 200
+    And the product name should be "Gaming Mouse"
+    And the product price should be 39.99
+    When I request the product with ID 1
+    Then the response status code should be 200
+    And the product name should be "Gaming Mouse"
+    And the product price should be 39.99
