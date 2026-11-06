@@ -35,3 +35,13 @@ def step_check_category(context, category):
 def step_check_price(context, price):
     """Verify the product price."""
     assert context.response.json()["price"] == price
+
+
+@when('I update the product with ID {product_id:d} with name "{name}" and price {price:f}')
+def step_update_product(context, product_id, name, price):
+    """Update the product's name and price using the API."""
+    with TestClient(app) as client:
+        context.response = client.patch(
+            f"/products/{product_id}",
+            json={"name": name, "price": price},
+        )
