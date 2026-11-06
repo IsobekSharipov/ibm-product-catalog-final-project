@@ -1,0 +1,42 @@
+"""Unit tests for the Product database model."""
+
+import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from sqlalchemy.pool import StaticPool
+
+from app.database import Base
+from app.models import Product
+from tests.factories import ProductFactory
+
+
+@pytest.fixture
+def db_session():
+    """Provide an isolated in-memory database for each test."""
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    Base.metadata.create_all(bind=engine)
+    with Session(engine) as session:
+        yield session
+    Base.metadata.drop_all(bind=engine)
+    engine.dispose()
+
+
+def test_read_a_product(db_session):
+    """It should read a product from the database."""
+    product = ProductFactory()
+    db_session.add(product)
+    db_session.commit()
+
+    saved_product = db_session.get(Product, product.id)
+
+    assert saved_product is not None
+    assert saved_product.id == product.id
+    assert saved_product.name == product.name
+    assert saved_product.category == product.category
+    assert saved_product.description == product.description
+    assert saved_product.price == product.price
+    assert saved_product.available == product.available
