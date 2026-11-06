@@ -25,3 +25,9 @@ Feature: Product Catalog Management
     Then the response status code should be 200
     And the product name should be "Gaming Mouse"
     And the product price should be 39.99
+
+  Scenario: Delete an existing product
+    When I delete the product with ID 2
+    Then the response status code should be 204
+    When I request the product with ID 2
+    Then the response status code should be 404
