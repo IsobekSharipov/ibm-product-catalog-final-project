@@ -140,3 +140,18 @@ def test_list_products_by_category(client, db_session):
     assert len(data) == 1
     assert data[0]["id"] == matching_product.id
     assert data[0]["category"] == "Electronics"
+
+def test_list_products_by_availability(client, db_session):
+    """It should list only available products through the REST API."""
+    available_product = ProductFactory(available=True)
+    unavailable_product = ProductFactory(available=False)
+    db_session.add_all([available_product, unavailable_product])
+    db_session.commit()
+
+    response = client.get("/products", params={"available": "true"})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["id"] == available_product.id
+    assert data[0]["available"] is True
