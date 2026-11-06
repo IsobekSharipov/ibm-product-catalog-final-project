@@ -125,3 +125,18 @@ def test_list_products_by_name(client, db_session):
     assert len(data) == 1
     assert data[0]["id"] == matching_product.id
     assert data[0]["name"] == "Wireless Mouse"
+
+def test_list_products_by_category(client, db_session):
+    """It should list only products matching the requested category."""
+    matching_product = ProductFactory(category="Electronics")
+    other_product = ProductFactory(category="Books")
+    db_session.add_all([matching_product, other_product])
+    db_session.commit()
+
+    response = client.get("/products", params={"category": "Electronics"})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["id"] == matching_product.id
+    assert data[0]["category"] == "Electronics"
