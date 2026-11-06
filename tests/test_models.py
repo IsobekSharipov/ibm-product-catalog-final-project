@@ -114,3 +114,19 @@ def test_find_products_by_category(db_session):
     assert len(results) == 2
     assert {product.id for product in results} == {first.id, second.id}
     assert all(product.category == "Electronics" for product in results)
+
+def test_find_products_by_availability(db_session):
+    """It should find products matching the requested availability."""
+    available_one = ProductFactory(available=True)
+    available_two = ProductFactory(available=True)
+    unavailable = ProductFactory(available=False)
+    db_session.add_all([available_one, available_two, unavailable])
+    db_session.commit()
+
+    results = db_session.query(Product).filter_by(available=True).all()
+
+    assert len(results) == 2
+    assert {product.id for product in results} == {
+        available_one.id, available_two.id
+    }
+    assert all(product.available is True for product in results)
