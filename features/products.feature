@@ -38,3 +38,11 @@ Feature: Product Catalog Management
     And the response should contain 2 products
     And the product list should contain "Wireless Mouse"
     And the product list should contain "Keyboard"
+
+  Scenario: Search products by category
+    When I search for products in category "Electronics"
+    Then the response status code should be 200
+    And the response should contain 2 products
+    And the product list should contain "Wireless Mouse"
+    And the product list should contain "Keyboard"
+    And all returned products should belong to category "Electronics"
