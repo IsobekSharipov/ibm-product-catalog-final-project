@@ -46,3 +46,11 @@ Feature: Product Catalog Management
     And the product list should contain "Wireless Mouse"
     And the product list should contain "Keyboard"
     And all returned products should belong to category "Electronics"
+
+  Scenario: Search products by availability
+    When I search for products with availability "true"
+    Then the response status code should be 200
+    And the response should contain 2 products
+    And the product list should contain "Wireless Mouse"
+    And the product list should contain "Keyboard"
+    And all returned products should have availability "true"
