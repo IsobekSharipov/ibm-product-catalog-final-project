@@ -95,17 +95,34 @@ def test_list_all_products(db_session):
     }
 
 def test_find_products_by_name(db_session):
-    """It should find products matching a given name."""
-    matching_product = ProductFactory(name="Wireless Mouse")
-    other_product = ProductFactory(name="Mechanical Keyboard")
-    db_session.add_all([matching_product, other_product])
+    """It should find all products matching a given name."""
+    products = [
+        ProductFactory(name="Wireless Mouse"),
+        ProductFactory(name="Mechanical Keyboard"),
+        ProductFactory(name="Wireless Mouse"),
+        ProductFactory(name="Gaming Monitor"),
+        ProductFactory(name="Wireless Mouse"),
+    ]
+
+    db_session.add_all(products)
     db_session.commit()
 
-    results = db_session.query(Product).filter_by(name="Wireless Mouse").all()
+    name = "Wireless Mouse"
+    expected_count = sum(
+        product.name == name for product in products
+    )
 
-    assert len(results) == 1
-    assert results[0].id == matching_product.id
-    assert results[0].name == "Wireless Mouse"
+    results = db_session.query(Product).filter_by(name=name).all()
+
+    assert len(results) == expected_count
+    assert expected_count == 3
+    assert all(product.name == name for product in results)
+
+    expected_ids = {
+        product.id for product in products if product.name == name
+    }
+    assert {product.id for product in results} == expected_ids
+
 
 def test_find_products_by_category(db_session):
     """It should find only products in the requested category."""
