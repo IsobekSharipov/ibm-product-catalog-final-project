@@ -43,14 +43,31 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
     return product
 
 
-@router.put("/{product_id}", response_model=ProductRead)
-def replace_product(product_id: int, payload: ProductCreate, db: Session = Depends(get_db)):
-    """Replace an existing product with a complete representation."""
-    product = get_product(product_id, db)
+@router.put(
+    "/{product_id}",
+    response_model=ProductRead,
+    status_code=status.HTTP_200_OK,
+)
+def replace_product(
+    product_id: int,
+    payload: ProductCreate,
+    db: Session = Depends(get_db),
+):
+    """Update an existing product using a JSON request body."""
+    product = db.get(Product, product_id)
+
+    if product is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found",
+        )
+
     for field, value in payload.model_dump().items():
         setattr(product, field, value)
+
     db.commit()
     db.refresh(product)
+
     return product
 
 
