@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-@when('I click the "{button_text}" button')
+@when('I press the "{button_text}" button')
 def step_click_button(context, button_text):
     """Find a visible button by its text and click it."""
     driver = context.browser
