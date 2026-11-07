@@ -21,14 +21,19 @@ Feature: Product Catalog Management
     And the product price should be 25.99
 
   Scenario: Update an existing product
-    When I update the product with ID 1 with name "Gaming Mouse" and price 39.99
-    Then the response status code should be 200
-    And the product name should be "Gaming Mouse"
-    And the product price should be 39.99
-    When I request the product with ID 1
-    Then the response status code should be 200
-    And the product name should be "Gaming Mouse"
-    And the product price should be 39.99
+    When I search for a product by name "Wireless Mouse"
+    Then I should find a product named "Wireless Mouse"
+    When I copy the product ID
+    And I change the product name to "Gaming Mouse"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I clear the product search form
+    And I retrieve the product using the copied ID
+    Then I should find a product named "Gaming Mouse"
+    When I search for a product by name "Gaming Mouse"
+    Then I should find a product named "Gaming Mouse"
+    When I search for a product by name "Wireless Mouse"
+    Then I should not find a product named "Wireless Mouse"
 
   Scenario: Delete an existing product
     When I delete the product with ID 2
