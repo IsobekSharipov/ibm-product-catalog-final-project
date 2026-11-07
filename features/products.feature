@@ -10,9 +10,13 @@ Feature: Product Catalog Management
       | 2  | Keyboard       | Electronics | USB keyboard   | 49.99 | true      |
 
   Scenario: Read an existing product
-    When I request the product with ID 1
+    When I search for a product by name "Wireless Mouse"
+    And I clear the product search form
+    And I retrieve the product by its ID
     Then the response status code should be 200
     And the product name should be "Wireless Mouse"
+    And the product description should be "Wireless mouse"
+    And the product availability should be true
     And the product category should be "Electronics"
     And the product price should be 25.99
 
