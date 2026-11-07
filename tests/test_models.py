@@ -80,6 +80,9 @@ def test_delete_a_product(db_session):
 
 def test_list_all_products(db_session):
     """It should list all products stored in the database."""
+    initial_products = db_session.query(Product).all()
+    assert initial_products == []
+
     products = [ProductFactory() for _ in range(5)]
     db_session.add_all(products)
     db_session.commit()
