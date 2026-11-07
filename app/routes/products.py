@@ -43,6 +43,17 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
     return product
 
 
+@router.put("/{product_id}", response_model=ProductRead)
+def replace_product(product_id: int, payload: ProductCreate, db: Session = Depends(get_db)):
+    """Replace an existing product with a complete representation."""
+    product = get_product(product_id, db)
+    for field, value in payload.model_dump().items():
+        setattr(product, field, value)
+    db.commit()
+    db.refresh(product)
+    return product
+
+
 @router.patch("/{product_id}", response_model=ProductRead)
 def update_product(product_id: int, payload: ProductUpdate, db: Session = Depends(get_db)):
     """Partially update a product."""
