@@ -77,3 +77,19 @@ def step_verify_text_in_results(context, expected_text):
     assert expected_text in results.text, (
         f"Expected text not found in search results: {expected_text}"
     )
+
+
+@then('I should not see "{unexpected_text}" in the results')
+def step_verify_text_absent_from_results(context, unexpected_text):
+    """Verify that the specified text is absent from search results."""
+    driver = context.browser
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "search_results"))
+    )
+    WebDriverWait(driver, 10).until_not(
+        EC.text_to_be_present_in_element((By.ID, "search_results"), unexpected_text)
+    )
+    results = driver.find_element(By.ID, "search_results")
+    assert unexpected_text not in results.text, (
+        f"Unexpected text found in search results: {unexpected_text}"
+    )
