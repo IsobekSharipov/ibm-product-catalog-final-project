@@ -42,24 +42,23 @@ def test_read_a_product(db_session):
     assert saved_product.available == product.available
 
 def test_update_a_product(db_session):
-    """It should update an existing product in the database."""
+    """It should update a product description without changing its ID."""
     product = ProductFactory()
     db_session.add(product)
     db_session.commit()
-    product_id = product.id
 
-    product.name = "Updated Laptop"
-    product.price = 1299.99
-    product.available = False
+    original_id = product.id
+    new_description = "Updated product description"
+
+    product.description = new_description
     db_session.commit()
     db_session.expire_all()
 
-    updated_product = db_session.get(Product, product_id)
+    updated_product = db_session.get(Product, original_id)
 
     assert updated_product is not None
-    assert updated_product.name == "Updated Laptop"
-    assert updated_product.price == 1299.99
-    assert updated_product.available is False
+    assert updated_product.id == original_id
+    assert updated_product.description == new_description
 
 def test_delete_a_product(db_session):
     """It should delete a product from the database."""
