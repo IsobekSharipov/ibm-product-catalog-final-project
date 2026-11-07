@@ -64,3 +64,16 @@ def step_verify_message_present(context, expected_message):
     assert expected_message in page_text, (
         f"Expected message was not displayed: {expected_message}"
     )
+
+
+@then('I should see "{expected_text}" in the results')
+def step_verify_text_in_results(context, expected_text):
+    """Wait for the expected text inside the search results element."""
+    driver = context.browser
+    WebDriverWait(driver, 10).until(
+        EC.text_to_be_present_in_element((By.ID, "search_results"), expected_text)
+    )
+    results = driver.find_element(By.ID, "search_results")
+    assert expected_text in results.text, (
+        f"Expected text not found in search results: {expected_text}"
+    )
