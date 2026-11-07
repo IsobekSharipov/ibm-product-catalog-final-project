@@ -60,27 +60,46 @@ def test_read_a_product(client, db_session):
     assert data["available"] == product.available
 
 def test_update_a_product(client, db_session):
-    """It should update an existing product through the REST API."""
+    """It should create a product with POST and update it with PUT."""
     product = ProductFactory()
-    db_session.add(product)
-    db_session.commit()
 
-    response = client.patch(
-        f"/products/{product.id}",
-        json={"name": "Updated Product", "price": 149.99, "available": False},
+    create_response = client.post(
+        "/products",
+        json={
+            "name": product.name,
+            "category": product.category,
+            "description": product.description,
+            "price": product.price,
+            "available": product.available,
+        },
     )
 
-    assert response.status_code == 200
-    data = response.json()
-    assert data["id"] == product.id
-    assert data["name"] == "Updated Product"
-    assert data["price"] == 149.99
-    assert data["available"] is False
+    assert create_response.status_code == 201
+    product_id = create_response.json()["id"]
 
-    db_session.refresh(product)
-    assert product.name == "Updated Product"
-    assert product.price == 149.99
-    assert product.available is False
+    updated_description = "Updated product description"
+
+    update_response = client.put(
+        f"/products/{product_id}",
+        json={
+            "name": product.name,
+            "category": product.category,
+            "description": updated_description,
+            "price": product.price,
+            "available": product.available,
+        },
+    )
+
+    assert update_response.status_code == 200
+
+    data = update_response.json()
+    assert data["id"] == product_id
+    assert data["description"] == updated_description
+
+    saved_product = db_session.get(Product, product_id)
+    assert saved_product is not None
+    assert saved_product.description == updated_description
+
 
 def test_delete_a_product(client, db_session):
     """It should delete a product through the REST API."""
