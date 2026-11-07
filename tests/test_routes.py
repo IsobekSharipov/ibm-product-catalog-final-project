@@ -102,19 +102,27 @@ def test_update_a_product(client, db_session):
 
 
 def test_delete_a_product(client, db_session):
-    """It should delete a product through the REST API."""
+    """It should delete a product and verify the response and count."""
     product = ProductFactory()
     db_session.add(product)
     db_session.commit()
+
     product_id = product.id
+    initial_count = db_session.query(Product).count()
 
     response = client.delete(f"/products/{product_id}")
 
     assert response.status_code == 204
+    assert response.content == b""
+
+    final_count = db_session.query(Product).count()
+    assert final_count == initial_count - 1
+
     assert db_session.get(Product, product_id) is None
 
     read_response = client.get(f"/products/{product_id}")
     assert read_response.status_code == 404
+
 
 def test_list_all_products(client, db_session):
     """It should return all products through the REST API."""
