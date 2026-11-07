@@ -61,17 +61,21 @@ def test_update_a_product(db_session):
     assert updated_product.description == new_description
 
 def test_delete_a_product(db_session):
-    """It should delete a product from the database."""
+    """It should delete a product and verify the database count."""
     product = ProductFactory()
     db_session.add(product)
     db_session.commit()
+
     product_id = product.id
+
+    assert db_session.query(Product).count() == 1
 
     db_session.delete(product)
     db_session.commit()
 
-    deleted_product = db_session.get(Product, product_id)
+    assert db_session.query(Product).count() == 0
 
+    deleted_product = db_session.get(Product, product_id)
     assert deleted_product is None
 
 def test_list_all_products(db_session):
