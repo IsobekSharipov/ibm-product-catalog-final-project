@@ -9,6 +9,7 @@ Feature: Product Catalog Management
       | 1  | Wireless Mouse | Electronics | Wireless mouse | 25.99 | true      |
       | 2  | Keyboard       | Electronics | USB keyboard   | 49.99 | true      |
       | 3  | Office Chair   | Furniture   | Desk chair    | 89.99 | true      |
+      | 4  | Gaming Monitor | Electronics | LED monitor   | 199.99 | false     |
 
   Scenario: Read an existing product
     When I search for a product by name "Wireless Mouse"
@@ -65,12 +66,14 @@ Feature: Product Catalog Management
     And I should not see "Office Chair" in the results
 
   Scenario: Search products by availability
-    When I search for products with availability "true"
-    Then the response status code should be 200
-    And the response should contain 2 products
-    And the product list should contain "Wireless Mouse"
-    And the product list should contain "Keyboard"
-    And all returned products should have availability "true"
+    Given I am on the "Home Page"
+    When I press the "Clear" button
+    And I select "True" in the "available" field
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Wireless Mouse" in the results
+    And I should see "Keyboard" in the results
+    And I should not see "Gaming Monitor" in the results
 
   Scenario: Search products by name
     When I search for products with name "Wireless Mouse"
