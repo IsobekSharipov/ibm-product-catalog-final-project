@@ -8,6 +8,7 @@ Feature: Product Catalog Management
       | id | name           | category    | description    | price | available |
       | 1  | Wireless Mouse | Electronics | Wireless mouse | 25.99 | true      |
       | 2  | Keyboard       | Electronics | USB keyboard   | 49.99 | true      |
+      | 3  | Office Chair   | Furniture   | Desk chair    | 89.99 | true      |
 
   Scenario: Read an existing product
     When I search for a product by name "Wireless Mouse"
@@ -54,12 +55,14 @@ Feature: Product Catalog Management
     And I should see "Keyboard" in the results
 
   Scenario: Search products by category
-    When I search for products in category "Electronics"
-    Then the response status code should be 200
-    And the response should contain 2 products
-    And the product list should contain "Wireless Mouse"
-    And the product list should contain "Keyboard"
-    And all returned products should belong to category "Electronics"
+    Given I am on the "Home Page"
+    When I press the "Clear" button
+    And I select "Electronics" in the "category" field
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Wireless Mouse" in the results
+    And I should see "Keyboard" in the results
+    And I should not see "Office Chair" in the results
 
   Scenario: Search products by availability
     When I search for products with availability "true"
