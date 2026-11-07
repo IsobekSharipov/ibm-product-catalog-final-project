@@ -46,11 +46,12 @@ Feature: Product Catalog Management
     Then I should not find a product named "Wireless Mouse"
 
   Scenario: List all products
-    When I request the list of all products
-    Then the response status code should be 200
-    And the response should contain 2 products
-    And the product list should contain "Wireless Mouse"
-    And the product list should contain "Keyboard"
+    Given I am on the "Home Page"
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Wireless Mouse" in the results
+    And I should see "Keyboard" in the results
 
   Scenario: Search products by category
     When I search for products in category "Electronics"
