@@ -36,10 +36,14 @@ Feature: Product Catalog Management
     Then I should not find a product named "Wireless Mouse"
 
   Scenario: Delete an existing product
-    When I delete the product with ID 2
-    Then the response status code should be 204
-    When I request the product with ID 2
-    Then the response status code should be 404
+    When I search for a product by name "Wireless Mouse"
+    Then I should find a product named "Wireless Mouse"
+    When I copy the product ID
+    And I delete the product using the copied ID
+    Then I should see the message "Product has been deleted"
+    When I clear the product search form
+    And I search for a product by name "Wireless Mouse"
+    Then I should not find a product named "Wireless Mouse"
 
   Scenario: List all products
     When I request the list of all products
